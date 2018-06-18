@@ -12,7 +12,47 @@ DIRECTORY = None			# sciezka do pliku z zapisanymi kodami
 TMP_FILE = 'tmp.txt'	# plik tymaczsowy, uzywany do zapisania wyniku dzialania skryptu
 
 #Czesc Tomek
+class MyService(rpyc.Service):
+	
+	# W Momencie uruchomienia serwera, tworzony (badz czyszczony) jest folder na kody od klientow.
+	# Zbierane sa one tak dlugo, jak dlugo trwa sesja serwera. Ponowne uruchomienie serwera,
+	# spowoduje wyczyszcenie tych plikow. 
 
+	code = None # zmienna przechowujaca kod przeslany od klienta
+	
+	# Wywolywana po podlaczeniu sie do serwera
+	def on_connect(self):
+		print('Hello new client!')
+		return('Succesfully connected to server!')
+	pass
+	
+	# Wywolywana po zakonczeniu polaczenia
+	def on_disconnect(self):	
+		print('Goodbye client!')
+		return('Succesfully disconnected from server!')
+	pass
+		
+	# Funkcja odpowiadajaca za odebranie kodu od klienta. W zaleznosci czy kod jest poprawny, zwraca odpowiednia wartosc
+	def exposed_send_and_check_code(self, code):	
+		self.code = code
+		if self.is_valid_python() == True:
+			return True
+		else:
+			return False
+	pass
+	
+	# Sprawdza, czy odebrany kod mozna skompilowac. Jesli tak, procedura jest kontynuowana. 
+	# W przeciwnym wypadku rzucany jest Exception
+	def is_valid_python(self):
+		print('Code is: {}'.format(self.code))
+		try:
+			ast.parse(self.code)
+		except SyntaxError:
+			print('Code have errors')
+			return False
+		print('Code is valid')
+		return True
+	pass
 #Czesc Tomek end
 	
 	# Odpowiada za wykonanie odebranego kodu po stronie serwera. Zapisuje jego wynik do pliku tymczasowego, 
