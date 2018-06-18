@@ -11,7 +11,6 @@ FILE_PATH = 'Received_codes'	# folder, w ktorym skladowane sa zapamietanie kody 
 DIRECTORY = None			# sciezka do pliku z zapisanymi kodami
 TMP_FILE = 'tmp.txt'	# plik tymaczsowy, uzywany do zapisania wyniku dzialania skryptu
 
-#Czesc Tomek aka pawulonik100ml
 class MyService(rpyc.Service):
 	
 	# W Momencie uruchomienia serwera, tworzony (badz czyszczony) jest folder na kody od klientow.
